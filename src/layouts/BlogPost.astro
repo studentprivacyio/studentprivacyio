@@ -1,0 +1,30 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+    frontmatter: {
+        title: string;
+        pubDate: string;
+        description: string;
+    }
+}
+
+const { frontmatter } = Astro.props;
+const pubDate = new Date(frontmatter.pubDate);
+---
+<Layout title={frontmatter.title}>
+    <article class="prose">
+        <h1>{frontmatter.title}</h1>
+        <div class="text-gray-600 mb-8">
+            <time datetime={pubDate.toISOString()}>
+                {pubDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })}
+            </time>
+        </div>
+        <p class="text-xl text-gray-600 mb-8">{frontmatter.description}</p>
+        <slot />
+    </article>
+</Layout> 

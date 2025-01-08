@@ -1,0 +1,68 @@
+---
+import Nav from '../components/Nav.astro';
+//remove to disable transitions
+import { ClientRouter } from 'astro:transitions';
+interface Props {
+	title?: string;
+	isMarkdown?: boolean;
+}
+
+const { title = "Student Privacy", isMarkdown = true } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+		<title>{title}</title>
+		<ClientRouter />
+	</head>
+	<body class="font-sans bg-white">
+		<Nav />
+		<main class="max-w-4xl mx-auto px-4 py-12">
+			<div class={isMarkdown ? 'prose' : ''}>
+				<slot />
+			</div>
+		</main>
+	</body>
+</html>
+
+<style is:global>
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
+
+	html {
+		font-family: 'Inter', sans-serif;
+	}
+
+	/* Base styles for markdown content */
+	.prose {
+		@apply max-w-none;
+	}
+	
+	.prose h1 {
+		@apply text-4xl font-medium mb-6;
+	}
+	
+	.prose h2 {
+		@apply text-2xl font-medium mb-4 mt-8;
+	}
+	
+	.prose p {
+		@apply mb-4 leading-relaxed text-gray-600;
+	}
+	
+	.prose ul, .prose ol {
+		@apply mb-4 ml-6 text-gray-600;
+	}
+	
+	.prose li {
+		@apply mb-2;
+	}
+</style>
