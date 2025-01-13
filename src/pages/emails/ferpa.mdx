@@ -1,0 +1,24 @@
+---
+layout: "@layouts/EmailTemplate.astro"
+---
+
+export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: FERPA Records Request - ${softwareName}
+
+Dear School Administrator,
+
+I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to request access to my child's education records under the Family Educational Rights and Privacy Act (FERPA), specifically regarding data collected and maintained by ${softwareName} by ${softwareCompany}.
+
+Please provide copies of all education records maintained within ${softwareName}, including but not limited to:
+
+1. Any academic data or performance metrics
+2. Usage data and activity logs
+3. Assessment and evaluation data
+4. Communications or messages
+5. Any other personal information collected about my child
+
+Under FERPA, these records should be made available within 45 days of this request. Please contact me to arrange a convenient time to review these records or to provide copies.
+
+Sincerely,
+${parentName}
+Parent/Legal Guardian of ${studentName}
+`; 

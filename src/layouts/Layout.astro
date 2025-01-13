@@ -1,5 +1,6 @@
 ---
-import Nav from '../components/Nav.astro';
+import Nav from '@components/Nav.astro';
+import Footer from '@components/Footer.astro';
 //remove to disable transitions
 import { ClientRouter } from 'astro:transitions';
 interface Props {
@@ -29,6 +30,7 @@ const { title = "Student Privacy", isMarkdown = true } = Astro.props;
 				<slot />
 			</div>
 		</main>
+		<Footer />
 	</body>
 </html>
 
@@ -39,6 +41,7 @@ const { title = "Student Privacy", isMarkdown = true } = Astro.props;
 
 	html {
 		font-family: 'Inter', sans-serif;
+		scrollbar-gutter: stable;
 	}
 
 	/* Base styles for markdown content */
@@ -53,6 +56,10 @@ const { title = "Student Privacy", isMarkdown = true } = Astro.props;
 	.prose h2 {
 		@apply text-2xl font-medium mb-4 mt-8;
 	}
+
+	.prose h3 {
+		@apply text-xl font-medium mb-2;
+	}
 	
 	.prose p {
 		@apply mb-4 leading-relaxed text-gray-600;
@@ -62,7 +69,16 @@ const { title = "Student Privacy", isMarkdown = true } = Astro.props;
 		@apply mb-4 ml-6 text-gray-600;
 	}
 	
+	.prose ul {
+		@apply list-disc;
+	}
+	
+	.prose ol {
+		@apply list-decimal;
+	}
+	
 	.prose li {
 		@apply mb-2;
 	}
 </style>
+

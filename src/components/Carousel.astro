@@ -1,0 +1,193 @@
+---
+import FlaggedExample from '@components/FlaggedExample.astro';
+
+interface Example {
+    title: string;
+    description: string;
+    type: 'blocked' | 'flagged';
+}
+
+const examples: Example[] = [
+    {
+        title: 'The Atlantic',
+        description: 'Major news publication blocked, preventing access to important journalism and current events analysis.',
+        type: 'blocked'
+    },
+    {
+        title: 'Google Arts & Culture',
+        description: 'Educational platform blocked, limiting access to virtual museum tours and cultural resources.',
+        type: 'blocked'
+    },
+    {
+        title: 'Texas Driver Handbook',
+        description: 'Official state driving manual flagged due to mentions of traffic violations and accidents.',
+        type: 'flagged'
+    },
+    {
+        title: 'Bible.com',
+        description: 'Religious resource flagged for containing references to violence and adult themes.',
+        type: 'flagged'
+    },
+    {
+        title: 'Texas House of Representatives',
+        description: 'Government website flagged for political content and discussions of controversial legislation.',
+        type: 'flagged'
+    },
+    {
+        title: 'Romeo and Juliet',
+        description: 'Shakespeare\'s classic work flagged for references to violence, suicide, and romantic themes.',
+        type: 'flagged'
+    },
+    {
+        title: 'LGBTQ+ Resources',
+        description: 'Support and educational materials flagged as "sensitive content."',
+        type: 'flagged'
+    },
+    {
+        title: 'Political Cartoons',
+        description: 'Educational materials flagged for containing political commentary and satire.',
+        type: 'flagged'
+    },
+    {
+        title: 'Rhymezone.com',
+        description: 'Poetry and writing resource flagged due to potential presence of offensive words.',
+        type: 'flagged'
+    },
+    {
+        title: 'Holocaust Memorial Museum',
+        description: 'Historical education resources flagged for containing sensitive content about genocide.',
+        type: 'flagged'
+    },
+    {
+        title: 'Protest Materials',
+        description: 'Historical and educational content about civil rights movements flagged as potentially disruptive.',
+        type: 'flagged'
+    },
+    {
+        title: 'U.S. Constitution Scans',
+        description: 'National Archives documents flagged for containing terms related to weapons and violence.',
+        type: 'flagged'
+    },
+    {
+        title: 'Epilepsy Foundation Article',
+        description: 'Medical information about service animals flagged for containing health-related content.',
+        type: 'flagged'
+    },
+    {
+        title: 'Abortion Information',
+        description: 'Medical information about abortion blocked by a school district in Texas.',
+        type: 'blocked'
+    }
+];
+
+// Shuffle the examples array
+const shuffledExamples = [...examples].sort(() => Math.random() - 0.5);
+// Duplicate the array for infinite scrolling
+const loopedExamples = [...shuffledExamples, ...shuffledExamples];
+---
+
+<div class="w-full my-8">
+    <div class="relative carousel-container" data-total-items={examples.length}>
+        <div class="overflow-x-auto pb-4 scrollbar-hide carousel-scroll">
+            <div class="flex space-x-4 carousel-track">
+                {loopedExamples.map((example, index) => (
+                    <div class="carousel-item" data-index={index}>
+                        <FlaggedExample {...example} />
+                    </div>
+                ))}
+            </div>
+        </div>
+        <div class="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-white w-12 z-10"></div>
+        <div class="absolute top-0 bottom-0 right-0 bg-gradient-to-l from-white w-12 z-10"></div>
+    </div>
+</div>
+
+<script>
+    class Carousel {
+        container: HTMLElement;
+        scroll: HTMLElement;
+        track: HTMLElement;
+        items: HTMLElement[];
+        totalItems: number;
+        currentIndex: number = 0;
+        scrolling: boolean = false;
+        autoScrollInterval: ReturnType<typeof setInterval>;
+        
+        constructor(container: HTMLElement) {
+            this.container = container;
+            this.scroll = container.querySelector('.carousel-scroll')!;
+            this.track = container.querySelector('.carousel-track')!;
+            this.items = Array.from(container.querySelectorAll('.carousel-item'));
+            this.totalItems = parseInt(container.dataset.totalItems || '0');
+            this.autoScrollInterval = setInterval(() => {}, 0); // Initialize with dummy interval
+            
+            this.setupEventListeners();
+            this.startAutoScroll();
+        }
+        
+        setupEventListeners() {
+            this.scroll.addEventListener('scroll', () => this.handleScroll());
+            this.scroll.addEventListener('mouseenter', () => this.stopAutoScroll());
+            this.scroll.addEventListener('mouseleave', () => this.startAutoScroll());
+            this.scroll.addEventListener('touchstart', () => this.stopAutoScroll());
+            this.scroll.addEventListener('touchend', () => this.startAutoScroll());
+        }
+        
+        handleScroll() {
+            if (this.scrolling) return;
+            
+            const scrollLeft = this.scroll.scrollLeft;
+            const itemWidth = this.items[0].offsetWidth + 16; // width + margin
+            const totalWidth = itemWidth * this.totalItems;
+            
+            // If we're near the end, jump back to the start
+            if (scrollLeft >= totalWidth) {
+                this.scrolling = true;
+                this.scroll.scrollLeft = 0;
+                setTimeout(() => this.scrolling = false, 100);
+            }
+        }
+        
+        startAutoScroll() {
+            this.stopAutoScroll(); // Clear any existing interval
+            this.autoScrollInterval = setInterval(() => {
+                if (!document.hidden) {
+                    const itemWidth = this.items[0].offsetWidth + 16;
+                    this.scroll.scrollBy({ left: itemWidth, behavior: 'smooth' });
+                }
+            }, 3000);
+        }
+        
+        stopAutoScroll() {
+            clearInterval(this.autoScrollInterval);
+        }
+    }
+
+    let carousels: Carousel[] = [];
+
+    document.addEventListener('astro:page-load', () => {
+        document.querySelectorAll('.carousel-container').forEach(container => {
+            carousels.push(new Carousel(container as HTMLElement));
+        });
+    });
+
+    // Clean up carousels before navigating away
+    document.addEventListener('astro:before-swap', () => {
+        carousels.forEach(carousel => carousel.stopAutoScroll());
+        carousels = [];
+    });
+</script>
+
+<style>
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    .carousel-track {
+        will-change: transform;
+    }
+</style> 

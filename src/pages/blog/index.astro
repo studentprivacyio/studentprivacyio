@@ -1,13 +1,23 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from '@layouts/Layout.astro';
 
-const posts = await Astro.glob('./*.{md,mdx}');
+interface BlogPost {
+    url: string;
+    frontmatter: {
+        title: string;
+        pubDate: string;
+        description: string;
+    };
+}
+
+const posts = Object.values(import.meta.glob<BlogPost>('./*.mdx', { eager: true }))
+    .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
 ---
 <Layout title="Blog | Student Privacy">
     <h1 class="text-4xl font-bold mb-8">Blog Posts</h1>
     <div class="grid gap-8">
         {posts.map(post => (
-            <article class="border-b border-gray-200 pb-8">
+            <article class={`border-b border-gray-200 pb-8 ${posts.indexOf(post) === 0 ? 'border-t' : ''}`}>
                 <h2 class="text-2xl font-bold mb-2">
                     <a href={post.url} class="hover:text-blue-600 transition-colors">
                         {post.frontmatter.title}
@@ -15,10 +25,11 @@ const posts = await Astro.glob('./*.{md,mdx}');
                 </h2>
                 <div class="text-gray-600 mb-4">
                     <time datetime={post.frontmatter.pubDate}>
-                        {new Date(post.frontmatter.pubDate).toLocaleDateString('en-US', {
+                        {new Date(post.frontmatter.pubDate).toLocaleString('en-US', {
                             year: 'numeric',
                             month: 'long',
-                            day: 'numeric'
+                            day: 'numeric',
+                            timeZone: 'UTC'
                         })}
                     </time>
                 </div>

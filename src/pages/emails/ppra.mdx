@@ -1,0 +1,24 @@
+---
+layout: "@layouts/EmailTemplate.astro"
+---
+
+export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: PPRA Opt-Out Request - ${softwareName}
+
+Dear School Administrator,
+
+I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to exercise my rights under the Protection of Pupil Rights Amendment (PPRA) regarding the use of ${softwareName} by ${softwareCompany}.
+
+I hereby opt out of and deny permission for my child to participate in:
+
+1. Any survey concerning protected information categories through ${softwareName}
+2. Marketing surveys conducted via ${softwareName}
+3. Any non-emergency, invasive data collection or monitoring through ${softwareName}
+
+This opt-out should be recorded and honored for the current school year and all future academic years unless explicitly revoked by me in writing. Please ensure that ${softwareCompany} is notified of this opt-out request.
+
+Please confirm receipt of this request and ensure all relevant staff members are notified of these privacy preferences.
+
+Sincerely,
+${parentName}
+Parent/Legal Guardian of ${studentName}
+`; 

@@ -1,0 +1,24 @@
+---
+layout: "@layouts/EmailTemplate.astro"
+---
+
+export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: COPPA Opt-Out Request - ${softwareName}
+
+Dear School Administrator,
+
+I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to exercise my rights under the Children's Online Privacy Protection Act (COPPA) regarding the use of ${softwareName} by ${softwareCompany}.
+
+As my child is under 13 years of age, I hereby:
+
+1. Revoke any previous consent given for the collection of my child's personal information through ${softwareName}
+2. Request the deletion of any personal information collected about my child by ${softwareName}
+3. Opt out of any future collection of my child's personal information by ${softwareName}
+
+Please ensure that ${softwareCompany} and any other third-party operators working with ${softwareName} are notified of this opt-out request.
+
+Please confirm receipt of this request and provide written confirmation when all personal information has been deleted from ${softwareName}'s systems.
+
+Sincerely,
+${parentName}
+Parent/Legal Guardian of ${studentName}
+`; 

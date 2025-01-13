@@ -1,5 +1,5 @@
 ---
-import Layout from './Layout.astro';
+import Layout from '@layouts/Layout.astro';
 
 interface Props {
     frontmatter: {
@@ -13,14 +13,15 @@ const { frontmatter } = Astro.props;
 const pubDate = new Date(frontmatter.pubDate);
 ---
 <Layout title={frontmatter.title}>
-    <article class="prose">
+    <article class="prose"></article>
         <h1>{frontmatter.title}</h1>
-        <div class="text-gray-600 mb-8">
+        <div class="text-gray-600 mb-4">
             <time datetime={pubDate.toISOString()}>
                 {pubDate.toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
-                    day: 'numeric'
+                    day: 'numeric',
+                    timeZone: 'UTC'
                 })}
             </time>
         </div>
@@ -28,3 +29,9 @@ const pubDate = new Date(frontmatter.pubDate);
         <slot />
     </article>
 </Layout> 
+
+<style is:global>
+    .prose a {
+        @apply text-gray-600 hover:text-gray-900 underline;
+    }
+</style>

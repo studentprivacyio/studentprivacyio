@@ -1,0 +1,188 @@
+---
+import RadioOption from '@components/RadioOption.astro';
+import Button from '@components/Button.astro';
+---
+
+<form class="max-w-2xl mx-auto space-y-8 divide-y divide-gray-200 bg-white p-6">
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Request Type</h3>
+      <p class="mt-1 text-sm text-gray-500">Select the type of request you'd like to make.</p>
+      <div class="mt-4 space-y-1 bg-gray-50 p-2">
+        <RadioOption
+          id="ppra"
+          name="request_type"
+          value="ppra"
+          label="Opt out via PPRA"
+        />
+        <RadioOption
+          id="ferpa"
+          name="request_type"
+          value="ferpa"
+          label="Request records via FERPA"
+        />
+        <RadioOption
+          id="coppa"
+          name="request_type"
+          value="coppa"
+          label="Opt out via COPPA (Under 13 only)"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="software_name" class="block text-sm font-medium text-gray-700">Software Name</label>
+        <div class="mt-1">
+          <input
+            type="text"
+            name="software_name"
+            id="software_name"
+            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label for="software_company" class="block text-sm font-medium text-gray-700">Software Company</label>
+        <div class="mt-1">
+          <input
+            type="text"
+            name="software_company"
+            id="software_company"
+            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Send to Email Address</label>
+        <div class="mt-1">
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label for="student_name" class="block text-sm font-medium text-gray-700">Student Name</label>
+        <div class="mt-1">
+          <input
+            type="text"
+            name="student_name"
+            id="student_name"
+            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="md:col-span-2">
+        <label for="parent_name" class="block text-sm font-medium text-gray-700">Parent/Guardian Name</label>
+        <div class="mt-1">
+          <input
+            type="text"
+            name="parent_name"
+            id="parent_name"
+            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+            required
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <input
+        type="checkbox"
+        id="include_watermark"
+        name="include_watermark"
+        class="h-4 w-4 border-gray-300 text-gray-600 focus:ring-gray-500"
+      />
+      <label for="include_watermark" class="text-sm text-gray-600">
+        Include "Generated using Student Privacy Site" in email
+      </label>
+    </div>
+  </div>
+
+  <div class="pt-6 space-y-6">
+    <div>
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Email Preview</h3>
+      <div id="emailPreview" class="mt-4 p-4 bg-gray-50 border border-gray-200 font-mono text-sm whitespace-pre-wrap min-h-[200px]">Fill out the form to preview your email</div>
+    </div>
+
+    <div class="flex justify-end">
+      <Button type="submit">
+        I confirm that I am a parent/guardian of the student named above. Send this email.
+      </Button>
+    </div>
+  </div>
+</form>
+
+<script>
+    function setupForm() {
+        let debounceTimeout: ReturnType<typeof setTimeout>;
+        const form = document.querySelector('form');
+        const preview = document.getElementById('emailPreview');
+
+        async function updatePreview() {
+            const formData = new FormData(form as HTMLFormElement);
+            const requestType = formData.get('request_type');
+            const email = formData.get('email');
+            const studentName = formData.get('student_name');
+            const parentName = formData.get('parent_name');
+            const softwareName = formData.get('software_name');
+            const softwareCompany = formData.get('software_company');
+            const includeWatermark = formData.get('include_watermark') === 'on';
+
+            if (!requestType || !studentName || !parentName || !softwareName || !softwareCompany) {
+                if (preview) {
+                    preview.textContent = 'Fill out the form to preview your email';
+                }
+                return;
+            }
+
+            try {
+                const module = await import(`../pages/emails/${requestType}.mdx`);
+                let emailContent = module.generateEmail({ 
+                    studentName, 
+                    parentName,
+                    softwareName,
+                    softwareCompany
+                });
+                
+                if (includeWatermark) {
+                    // TODO: Add a link to the Student Privacy Site and change the name
+                    emailContent += '\n\nGenerated using Student Privacy Site (https://example.com)';
+                }
+                
+                if (preview) {
+                    preview.textContent = emailContent;
+                }
+            } catch (error) {
+                console.error('Error generating preview:', error);
+            }
+        }
+
+        // Update preview on form changes
+        form?.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(updatePreview, 500);
+        });
+
+        form?.addEventListener('change', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(updatePreview, 500);
+        });
+    }
+
+    // Initialize form on both initial load and subsequent navigations
+    document.addEventListener('astro:page-load', () => {
+        setupForm();
+    });
+</script> 

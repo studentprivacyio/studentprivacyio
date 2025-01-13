@@ -1,0 +1,118 @@
+---
+import Note from '@components/Note.astro';
+import OptOutForm from '@components/OptOutForm.astro';
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout title="Opt Out">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Privacy Rights Request Form</h1>
+        
+        <Note type="warning">This is not legal advice nor anything similar. Do not rely on this information.</Note>
+        
+        <div class="mt-8">
+            <OptOutForm />
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-8 max-w-md w-full mx-4 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Email Generated!</h2>
+                <p class="text-gray-600 mb-6">Your email client should have opened with the pre-filled message.</p>
+                <button
+                    id="closeSuccess"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import type { Options as ConfettiOptions } from 'canvas-confetti';
+    
+    type RequestType = 'ppra' | 'ferpa' | 'coppa';
+    
+    interface EmailTemplateModule {
+        generateEmail: (params: { studentName: string; parentName: string; softwareName: string; softwareCompany: string }) => string;
+    }
+
+    // Dynamic imports for email templates
+    const emailTemplates = {
+        ppra: () => import('./emails/ppra.mdx').then(m => m as unknown as EmailTemplateModule),
+        ferpa: () => import('./emails/ferpa.mdx').then(m => m as unknown as EmailTemplateModule),
+        coppa: () => import('./emails/coppa.mdx').then(m => m as unknown as EmailTemplateModule)
+    } as const;
+
+    // Function to generate mailto link with proper encoding
+    function generateMailtoLink(emailContent: string, toEmail: string) {
+        const [subject, ...bodyLines] = emailContent.split('\n');
+        const params = new URLSearchParams();
+        params.append('subject', subject.replace('Subject: ', ''));
+        params.append('body', bodyLines.join('\n'));
+        
+        // Convert URLSearchParams to string and fix encoding
+        // URLSearchParams encodes spaces as +, but mailto requires %20
+        const queryString = params.toString().replace(/\+/g, '%20');
+        return `mailto:${toEmail}?${queryString}`;
+    }
+
+    // Handle form submission
+    document.addEventListener('astro:page-load', () => {
+    document.querySelector('form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const requestType = formData.get('request_type') as RequestType;
+        const email = formData.get('email') as string;
+        const studentName = formData.get('student_name') as string;
+        const parentName = formData.get('parent_name') as string;
+        const softwareName = formData.get('software_name') as string;
+        const softwareCompany = formData.get('software_company') as string;
+
+        if (!requestType || !['ppra', 'ferpa', 'coppa'].includes(requestType)) {
+            console.error('Invalid request type');
+            return;
+        }
+
+        try {
+            const module = await emailTemplates[requestType]();
+            const emailContent = module.generateEmail({ 
+                studentName, 
+                parentName,
+                softwareName,
+                softwareCompany
+            });
+            const mailtoLink = generateMailtoLink(emailContent, email);
+            window.location.href = mailtoLink;
+
+            // Show success message with confetti
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.classList.remove('hidden');
+                const confettiOptions: ConfettiOptions = {
+                    particleCount: 200,
+                    spread: 200,
+                    origin: { y: 0.6 }
+                };
+                import('canvas-confetti').then(confetti => {
+                    confetti.default(confettiOptions);
+                });
+            }
+        } catch (error) {
+            console.error('Error generating email:', error);
+        }
+        });
+    });
+
+    // Handle success message close button
+    document.addEventListener('astro:page-load', () => {
+        document.getElementById('closeSuccess')?.addEventListener('click', () => {
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.classList.add('hidden');
+            }
+        });
+    });
+</script>

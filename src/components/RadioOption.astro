@@ -1,0 +1,23 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  value: string;
+  label: string;
+}
+
+const { id, name, value, label } = Astro.props;
+---
+
+<div class="flex items-center space-x-3 py-2.5 px-3 hover:bg-gray-50 transition-colors">
+  <input
+    type="radio"
+    {id}
+    {name}
+    {value}
+    class="h-5 w-5 border-gray-300 text-gray-600 focus:ring-gray-500"
+  />
+  <label for={id} class="block text-sm font-medium text-gray-700 cursor-pointer select-none">
+    {label}
+  </label>
+</div> 
