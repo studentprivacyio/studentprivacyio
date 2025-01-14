@@ -9,5 +9,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind(), mdx(), sitemap()]
+  integrations: [tailwind(), mdx(), sitemap()],
+  //todo: change to actual domain
+  site: 'https://localhost:4321',
 });
