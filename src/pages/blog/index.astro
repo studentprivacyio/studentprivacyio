@@ -13,7 +13,7 @@ interface BlogPost {
 const posts = Object.values(import.meta.glob<BlogPost>('./*.mdx', { eager: true }))
     .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
 ---
-<Layout title="Blog | Student Privacy">
+<Layout title="Blog | Student Privacy IO">
     <h1 class="text-4xl font-bold mb-8">Blog Posts</h1>
     <div class="grid gap-8">
         {posts.map(post => (

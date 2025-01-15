@@ -1,10 +1,10 @@
-# Student Privacy Rights Project
+# Student Privacy IO
 
 A resource hub empowering students to understand and protect their privacy rights in educational settings.
 
 ## 🎯 Mission
 
-We're a coalition of students, educators, and privacy advocates working to:
+We're a group of students, educators, and privacy advocates working to:
 - Empower students with knowledge about their educational privacy rights
 - Challenge excessive surveillance in educational environments
 - Provide practical tools for protecting student privacy
