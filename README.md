@@ -1,48 +1,47 @@
-# Astro Starter Kit: Basics
+# Student Privacy Rights Project
 
-```sh
-npm create astro@latest -- --template basics
-```
+A resource hub empowering students to understand and protect their privacy rights in educational settings.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## 🎯 Mission
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+We're a coalition of students, educators, and privacy advocates working to:
+- Empower students with knowledge about their educational privacy rights
+- Challenge excessive surveillance in educational environments
+- Provide practical tools for protecting student privacy
+- Support privacy-respecting educational practices
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## 🚀 Key Features
 
-## 🚀 Project Structure
+- **Privacy Rights Guide**: Comprehensive information about student privacy rights
+- **Opt-Out Resources**: Templates and guides for opting out of surveillance systems
+- **Real Examples**: Documentation of over-blocking and surveillance issues
+- **Legal Resources**: Connections to legal support when needed
+- **Educational Blog**: Regular updates on student privacy issues
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🛠️ Getting Started
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+1. **Learn Your Rights**: Visit `/rights` to understand your privacy protections
+2. **Take Action**: Find opt-out templates and guides at `/opt-out`
+3. **Stay Informed**: Check our blog at `/blog` for the latest updates
+4. **Get Support**: Connect with our community of privacy advocates
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🤝 Contributing
 
-## 🧞 Commands
+We welcome contributions from:
+- Students sharing surveillance experiences
+- Educators supporting privacy-respecting practices
+- Privacy advocates developing resources
+- Anyone passionate about student privacy
 
-All commands are run from the root of the project, from a terminal:
+## ⚠️ Disclaimer
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+This resource is maintained by student privacy advocates. While we strive for accuracy, please consult legal professionals for advice about your specific situation.
 
-## 👀 Want to learn more?
+## 📬 Contact
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Issue with the site? Send a pull request or open an issue on GitHub.
+Got other questions? Send an email to [low@mayo.cool](mailto:low@mayo.cool). 
+
+## 📜 License
+
+All source code, including page content, is licensed under MIT.
