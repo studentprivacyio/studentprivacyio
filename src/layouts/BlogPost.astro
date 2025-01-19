@@ -12,9 +12,12 @@ interface Props {
 const { frontmatter } = Astro.props;
 const pubDate = new Date(frontmatter.pubDate);
 ---
-<Layout title={frontmatter.title}>
-    <article class="prose"></article>
-        <h1>{frontmatter.title}</h1>
+<Layout 
+    title={frontmatter.title + " | Student Privacy IO"}
+    description={frontmatter.description}
+>
+    <article class="prose h-entry">
+        <h1 class="p-name">{frontmatter.title}</h1>
         <div class="text-gray-600 mb-4">
             <time datetime={pubDate.toISOString()}>
                 {pubDate.toLocaleDateString('en-US', {
@@ -28,7 +31,7 @@ const pubDate = new Date(frontmatter.pubDate);
         <p class="text-xl text-gray-600 mb-8">{frontmatter.description}</p>
         <slot />
     </article>
-</Layout> 
+</Layout>
 
 <style is:global>
     .prose a {
