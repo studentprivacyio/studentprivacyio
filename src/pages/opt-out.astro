@@ -42,9 +42,9 @@ import Layout from '@layouts/Layout.astro';
 
     // Dynamic imports for email templates
     const emailTemplates = {
-        ppra: () => import('./emails/ppra.mdx').then(m => m as unknown as EmailTemplateModule),
-        ferpa: () => import('./emails/ferpa.mdx').then(m => m as unknown as EmailTemplateModule),
-        coppa: () => import('./emails/coppa.mdx').then(m => m as unknown as EmailTemplateModule)
+        ppra: () => import('@emails/ppra.mdx').then(m => m as unknown as EmailTemplateModule),
+        ferpa: () => import('@emails/ferpa.mdx').then(m => m as unknown as EmailTemplateModule),
+        coppa: () => import('@emails/coppa.mdx').then(m => m as unknown as EmailTemplateModule)
     } as const;
 
     // Function to generate mailto link with proper encoding

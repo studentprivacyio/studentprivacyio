@@ -148,7 +148,7 @@ import Button from '@components/Button.astro';
             }
 
             try {
-                const module = await import(`../pages/emails/${requestType}.mdx`);
+                const module = await import(`../emails/${requestType}.mdx`);
                 let emailContent = module.generateEmail({ 
                     studentName, 
                     parentName,
