@@ -13,7 +13,7 @@ const { frontmatter } = Astro.props;
 const pubDate = new Date(frontmatter.pubDate);
 ---
 <Layout 
-    title={frontmatter.title + " | Student Privacy IO"}
+    title={frontmatter.title}
     description={frontmatter.description}
 >
     <article class="prose h-entry">

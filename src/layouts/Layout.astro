@@ -4,12 +4,16 @@ import Footer from '@components/Footer.astro';
 //remove to disable transitions
 import { ClientRouter } from 'astro:transitions';
 interface Props {
+	frontmatter?: {
+		title?: string;
+		description?: string;
+	}
 	title?: string;
 	isMarkdown?: boolean;
 	description?: string;
 }
-
-const { 
+const { frontmatter } = Astro.props;
+const {
 	title = "Student Privacy IO", 
 	isMarkdown = true,
 	description
@@ -42,7 +46,7 @@ const {
 		
 		<link rel="preload" href="/fonts/Inter.ttf" as="font" type="font/ttf" crossorigin>
 
-		<title>{title}</title>
+		<title>{(frontmatter?.title || title) + " | Student Privacy IO"}</title>
 
 		<link
  		 rel="icon"
