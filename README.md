@@ -33,6 +33,10 @@ We welcome contributions from:
 - Privacy advocates developing resources
 - Anyone passionate about student privacy
 
+Don't know what to add? Why not add a blog post about the laws in your state! [Student Privacy Compass](https://studentprivacycompass.org/state-laws/) is a great starting point.
+
+All content for this site is written in MDX, a varient of Markdown that allows for the use of components. If you're not familiar with how to add content using it, read the [MDX docs](https://mdxjs.com/docs/getting-started/) or ask ChatGPT.
+
 ## ⚠️ Disclaimer
 
 This resource is maintained by student privacy advocates. While we strive for accuracy, please consult legal professionals for advice about your specific situation.
