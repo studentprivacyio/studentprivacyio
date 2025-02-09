@@ -1,0 +1,24 @@
+---
+layout: "@layouts/EmailTemplate.astro"
+---
+
+export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: ECPA Opt-Out Request - ${softwareName}
+Dear School Administrator,
+
+I, ${studentName}, am writing to exercise my rights under the Electronic Communications Privacy Act (ECPA) regarding the use of ${softwareName} by ${softwareCompany}.
+
+Under ECPA (18 U.S.C. § 2510 et seq.), I do not consent to:
+
+1. The interception of my electronic communications through ${softwareName}
+2. The monitoring or surveillance of my electronic communications
+3. The storage and access of my stored electronic communications
+
+This opt-out should be recorded and honored for the current school year and all future academic years unless explicitly revoked by me in writing. Please ensure that ${softwareCompany} is notified of this opt-out request.
+
+Please confirm receipt of this request and ensure all relevant staff members are notified of these privacy preferences.
+
+My parent/legal guardian ${parentName} is aware of and supports this request.
+
+Sincerely,
+${studentName}
+Student`; 

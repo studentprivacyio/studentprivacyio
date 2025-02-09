@@ -3,7 +3,6 @@ layout: "@layouts/EmailTemplate.astro"
 ---
 
 export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: FERPA Records Request - ${softwareName}
-
 Dear School Administrator,
 
 I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to request access to my child's education records under the Family Educational Rights and Privacy Act (FERPA), specifically regarding data collected and maintained by ${softwareName} by ${softwareCompany}.

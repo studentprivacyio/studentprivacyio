@@ -27,6 +27,12 @@ import Button from '@components/Button.astro';
           value="coppa"
           label="Opt out via COPPA (Under 13 only)"
         />
+        <RadioOption
+          id="ecpa"
+          name="request_type"
+          value="ecpa"
+          label="Opt out via ECPA (Student must send)"
+        />
       </div>
     </div>
 
@@ -105,7 +111,7 @@ import Button from '@components/Button.astro';
         class="h-4 w-4 border-gray-300 text-gray-600 focus:ring-gray-500"
       />
       <label for="include_watermark" class="text-sm text-gray-600">
-        Include "Generated using studentprivacy.io" in email
+        Include "Generated using studentprivacy.io" in the email
       </label>
     </div>
   </div>

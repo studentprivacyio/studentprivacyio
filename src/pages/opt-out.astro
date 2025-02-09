@@ -8,7 +8,7 @@ import Layout from '@layouts/Layout.astro';
     <div class="max-w-4xl mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-8">Privacy Rights Request Form</h1>
         
-        <Note type="warning">This is not legal advice nor anything similar. Do not rely on this information. No personal data is collected. Note that your parent/guardian must send the email.</Note>
+        <Note type="warning">This is not legal advice nor anything similar. Do not rely on this information. Double check that the law applies to you in the way stated in the generated email. No personal data is collected. For PPRA, FERPA, and COPPA requests, your parent/guardian must send the email. For ECPA requests, the student must send the email.</Note>
         
         <div class="mt-8">
             <OptOutForm />
@@ -34,7 +34,7 @@ import Layout from '@layouts/Layout.astro';
 <script>
     import type { Options as ConfettiOptions } from 'canvas-confetti';
     
-    type RequestType = 'ppra' | 'ferpa' | 'coppa';
+    type RequestType = 'ppra' | 'ferpa' | 'coppa' | 'ecpa';
     
     interface EmailTemplateModule {
         generateEmail: (params: { studentName: string; parentName: string; softwareName: string; softwareCompany: string }) => string;
@@ -44,7 +44,8 @@ import Layout from '@layouts/Layout.astro';
     const emailTemplates = {
         ppra: () => import('@emails/ppra.mdx').then(m => m as unknown as EmailTemplateModule),
         ferpa: () => import('@emails/ferpa.mdx').then(m => m as unknown as EmailTemplateModule),
-        coppa: () => import('@emails/coppa.mdx').then(m => m as unknown as EmailTemplateModule)
+        coppa: () => import('@emails/coppa.mdx').then(m => m as unknown as EmailTemplateModule),
+        ecpa: () => import('@emails/ecpa.mdx').then(m => m as unknown as EmailTemplateModule)
     } as const;
 
     // Function to generate mailto link with proper encoding
@@ -72,7 +73,7 @@ import Layout from '@layouts/Layout.astro';
         const softwareName = formData.get('software_name') as string;
         const softwareCompany = formData.get('software_company') as string;
 
-        if (!requestType || !['ppra', 'ferpa', 'coppa'].includes(requestType)) {
+        if (!requestType || !['ppra', 'ferpa', 'coppa', 'ecpa'].includes(requestType)) {
             console.error('Invalid request type');
             return;
         }
