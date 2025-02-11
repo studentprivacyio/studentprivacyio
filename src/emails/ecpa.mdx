@@ -2,18 +2,27 @@
 layout: "@layouts/EmailTemplate.astro"
 ---
 
-export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: ECPA Opt-Out Request - ${softwareName}
+export const generateEmail = ({ studentName, parentName, softwareList }) => {
+    const softwareListText = softwareList.map(software => 
+        software.company ? `${software.name} by ${software.company}` : software.name
+    ).join(', ');
+
+    const isMultiple = softwareList.length > 1;
+    const subject = isMultiple ? 'ECPA Opt-Out Request - Multiple Software' : `ECPA Opt-Out Request - ${softwareList[0].name}`;
+
+    return (
+        `Subject: ${subject}
 Dear School Administrator,
 
-I, ${studentName}, am writing to exercise my rights under the Electronic Communications Privacy Act (ECPA) regarding the use of ${softwareName} by ${softwareCompany}.
+I, ${studentName}, am writing to exercise my rights under the Electronic Communications Privacy Act (ECPA) regarding the use of ${isMultiple ? 'the following software tools' : 'this software'}: ${softwareListText}.
 
 Under ECPA (18 U.S.C. § 2510 et seq.), I do not consent to:
 
-1. The interception of my electronic communications through ${softwareName}
+1. The interception of my electronic communications through ${isMultiple ? 'these software tools' : 'this software'}
 2. The monitoring or surveillance of my electronic communications
 3. The storage and access of my stored electronic communications
 
-This opt-out should be recorded and honored for the current school year and all future academic years unless explicitly revoked by me in writing. Please ensure that ${softwareCompany} is notified of this opt-out request.
+This opt-out should be recorded and honored for the current school year and all future academic years unless explicitly revoked by me in writing. Please ensure that ${isMultiple ? 'all relevant software companies are' : 'the software company is'} notified of this opt-out request.
 
 Please confirm receipt of this request and ensure all relevant staff members are notified of these privacy preferences.
 
@@ -21,4 +30,6 @@ My parent/legal guardian ${parentName} is aware of and supports this request.
 
 Sincerely,
 ${studentName}
-Student`; 
+Student`
+    );
+}

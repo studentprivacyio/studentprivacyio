@@ -36,33 +36,58 @@ import Button from '@components/Button.astro';
       </div>
     </div>
 
+    <div>
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium leading-6 text-gray-900">Software Information</h3>
+        <button
+          type="button"
+          id="addSoftware"
+          class="text-gray-600 hover:text-gray-900 bg-gray-300 px-4 py-1"
+        >
+          Add Software
+        </button>
+      </div>
+      
+      <div id="softwareList" class="space-y-6">
+        <div class="software-entry grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-md relative">
+          <button
+            type="button"
+            class="remove-software absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+            style="display: none;"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <div>
+            <label for="software_name_0" class="block text-sm font-medium text-gray-700">Software Name</label>
+            <div class="mt-1">
+              <input
+                type="text"
+                name="software_name"
+                id="software_name_0"
+                class="block w-full p-2.5 bg-white border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="software_company_0" class="block text-sm font-medium text-gray-700">Software Company (optional)</label>
+            <div class="mt-1">
+              <input
+                type="text"
+                name="software_company"
+                id="software_company_0"
+                class="block w-full p-2.5 bg-white border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label for="software_name" class="block text-sm font-medium text-gray-700">Software Name</label>
-        <div class="mt-1">
-          <input
-            type="text"
-            name="software_name"
-            id="software_name"
-            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-            required
-          />
-        </div>
-      </div>
-
-      <div>
-        <label for="software_company" class="block text-sm font-medium text-gray-700">Software Company</label>
-        <div class="mt-1">
-          <input
-            type="text"
-            name="software_company"
-            id="software_company"
-            class="block w-full p-2.5 bg-gray-50 border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-            required
-          />
-        </div>
-      </div>
-
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700">Send to Email Address</label>
         <div class="mt-1">
@@ -123,18 +148,85 @@ import Button from '@components/Button.astro';
     </div>
 
     <div class="flex justify-end">
-      <Button type="submit">
+      <button id="sendEmail" type="submit" class="text-gray-600 hover:text-gray-900 bg-gray-300 px-4 py-1">
         Send email
-      </Button>
+      </button>
     </div>
   </div>
 </form>
 
 <script>
+    interface SoftwareEntry {
+        name: string;
+        company?: string;
+    }
+
     function setupForm() {
         let debounceTimeout: ReturnType<typeof setTimeout>;
         const form = document.querySelector('form');
         const preview = document.getElementById('emailPreview');
+        const addSoftwareBtn = document.getElementById('addSoftware');
+        const softwareList = document.getElementById('softwareList');
+        let softwareCount = 1;
+
+        function createSoftwareEntry(index: number) {
+            const entry = document.createElement('div');
+            entry.className = 'software-entry grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-md relative';
+            entry.innerHTML = `
+                <button
+                    type="button"
+                    class="remove-software absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                    ${index === 0 ? 'style="display: none;"' : ''}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div>
+                    <label for="software_name_${index}" class="block text-sm font-medium text-gray-700">Software Name</label>
+                    <div class="mt-1">
+                        <input
+                            type="text"
+                            name="software_name"
+                            id="software_name_${index}"
+                            class="block w-full p-2.5 bg-white border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label for="software_company_${index}" class="block text-sm font-medium text-gray-700">Software Company (optional)</label>
+                    <div class="mt-1">
+                        <input
+                            type="text"
+                            name="software_company"
+                            id="software_company_${index}"
+                            class="block w-full p-2.5 bg-white border-gray-300 border outline-0 focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
+                        />
+                    </div>
+                </div>
+            `;
+            return entry;
+        }
+
+        function getSoftwareEntries(): SoftwareEntry[] {
+            const entries: SoftwareEntry[] = [];
+            const softwareEntries = document.querySelectorAll('.software-entry');
+            
+            softwareEntries.forEach(entry => {
+                const nameInput = entry.querySelector('[name="software_name"]') as HTMLInputElement;
+                const companyInput = entry.querySelector('[name="software_company"]') as HTMLInputElement;
+                
+                if (nameInput?.value) {
+                    entries.push({
+                        name: nameInput.value,
+                        ...(companyInput?.value ? { company: companyInput.value } : {})
+                    });
+                }
+            });
+            
+            return entries;
+        }
 
         async function updatePreview() {
             const formData = new FormData(form as HTMLFormElement);
@@ -142,11 +234,10 @@ import Button from '@components/Button.astro';
             const email = formData.get('email');
             const studentName = formData.get('student_name');
             const parentName = formData.get('parent_name');
-            const softwareName = formData.get('software_name');
-            const softwareCompany = formData.get('software_company');
             const includeWatermark = formData.get('include_watermark') === 'on';
+            const softwareEntries = getSoftwareEntries();
 
-            if (!requestType || !studentName || !parentName || !softwareName || !softwareCompany) {
+            if (!requestType || !studentName || !parentName || softwareEntries.length === 0) {
                 if (preview) {
                     preview.textContent = 'Fill out the form to preview your email';
                 }
@@ -158,12 +249,11 @@ import Button from '@components/Button.astro';
                 let emailContent = module.generateEmail({ 
                     studentName, 
                     parentName,
-                    softwareName,
-                    softwareCompany
+                    softwareList: softwareEntries
                 });
                 
                 if (includeWatermark) {
-                    emailContent += '\n\nGenerated using studentprivacy.io (https://studentprivacy.io)';
+                    emailContent += '\n\nGenerated using studentprivacy.io';
                 }
                 
                 if (preview) {
@@ -173,6 +263,19 @@ import Button from '@components/Button.astro';
                 console.error('Error generating preview:', error);
             }
         }
+
+        // Add software entry
+        addSoftwareBtn?.addEventListener('click', () => {
+            const newEntry = createSoftwareEntry(softwareCount++);
+            softwareList?.appendChild(newEntry);
+            
+            // Add remove button handler
+            const removeBtn = newEntry.querySelector('.remove-software');
+            removeBtn?.addEventListener('click', () => {
+                newEntry.remove();
+                updatePreview();
+            });
+        });
 
         // Update preview on form changes
         form?.addEventListener('input', () => {

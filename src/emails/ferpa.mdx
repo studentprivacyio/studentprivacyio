@@ -2,12 +2,21 @@
 layout: "@layouts/EmailTemplate.astro"
 ---
 
-export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: FERPA Records Request - ${softwareName}
+export const generateEmail = ({ studentName, parentName, softwareList }) => {
+    const softwareListText = softwareList.map(software => 
+        software.company ? `${software.name} by ${software.company}` : software.name
+    ).join(', ');
+
+    const isMultiple = softwareList.length > 1;
+    const subject = isMultiple ? 'FERPA Records Request - Multiple Software' : `FERPA Records Request - ${softwareList[0].name}`;
+
+    return (
+        `Subject: ${subject}
 Dear School Administrator,
 
-I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to request access to my child's education records under the Family Educational Rights and Privacy Act (FERPA), specifically regarding data collected and maintained by ${softwareName} by ${softwareCompany}.
+I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to request access to my child's education records under the Family Educational Rights and Privacy Act (FERPA), specifically regarding data collected and maintained by ${isMultiple ? 'the following software tools' : 'this software'}: ${softwareListText}.
 
-Please provide copies of all education records maintained within ${softwareName}, including but not limited to:
+Please provide copies of all education records maintained within ${isMultiple ? 'these systems' : 'this system'}, including but not limited to:
 
 1. Any academic data or performance metrics
 2. Usage data and activity logs
@@ -19,5 +28,6 @@ Under FERPA, these records should be made available within 45 days of this reque
 
 Sincerely,
 ${parentName}
-Parent/Legal Guardian of ${studentName}
-`; 
+Parent/Legal Guardian of ${studentName}`
+    );
+} 

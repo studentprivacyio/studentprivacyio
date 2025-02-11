@@ -36,8 +36,13 @@ import Layout from '@layouts/Layout.astro';
     
     type RequestType = 'ppra' | 'ferpa' | 'coppa' | 'ecpa';
     
+    interface SoftwareEntry {
+        name: string;
+        company?: string;
+    }
+
     interface EmailTemplateModule {
-        generateEmail: (params: { studentName: string; parentName: string; softwareName: string; softwareCompany: string }) => string;
+        generateEmail: (params: { studentName: string; parentName: string; softwareList: SoftwareEntry[] }) => string;
     }
 
     // Dynamic imports for email templates
@@ -47,6 +52,26 @@ import Layout from '@layouts/Layout.astro';
         coppa: () => import('@emails/coppa.mdx').then(m => m as unknown as EmailTemplateModule),
         ecpa: () => import('@emails/ecpa.mdx').then(m => m as unknown as EmailTemplateModule)
     } as const;
+
+    // Function to get software entries from form
+    function getSoftwareEntries(form: HTMLFormElement): SoftwareEntry[] {
+        const entries: SoftwareEntry[] = [];
+        const softwareEntries = form.querySelectorAll('.software-entry');
+        
+        softwareEntries.forEach(entry => {
+            const nameInput = entry.querySelector('[name="software_name"]') as HTMLInputElement;
+            const companyInput = entry.querySelector('[name="software_company"]') as HTMLInputElement;
+            
+            if (nameInput?.value) {
+                entries.push({
+                    name: nameInput.value,
+                    ...(companyInput?.value ? { company: companyInput.value } : {})
+                });
+            }
+        });
+        
+        return entries;
+    }
 
     // Function to generate mailto link with proper encoding
     function generateMailtoLink(emailContent: string, toEmail: string) {
@@ -63,58 +88,62 @@ import Layout from '@layouts/Layout.astro';
 
     // Handle form submission
     document.addEventListener('astro:page-load', () => {
-    document.querySelector('form')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        const requestType = formData.get('request_type') as RequestType;
-        const email = formData.get('email') as string;
-        const studentName = formData.get('student_name') as string;
-        const parentName = formData.get('parent_name') as string;
-        const softwareName = formData.get('software_name') as string;
-        const softwareCompany = formData.get('software_company') as string;
+        document.querySelector('form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const formData = new FormData(form);
+            const requestType = formData.get('request_type') as RequestType;
+            const email = formData.get('email') as string;
+            const studentName = formData.get('student_name') as string;
+            const parentName = formData.get('parent_name') as string;
+            const softwareEntries = getSoftwareEntries(form);
+            const includeWatermark = formData.get('include_watermark') === 'on';
 
-        if (!requestType || !['ppra', 'ferpa', 'coppa', 'ecpa'].includes(requestType)) {
-            console.error('Invalid request type');
-            return;
-        }
-
-        try {
-            const module = await emailTemplates[requestType]();
-            const emailContent = module.generateEmail({ 
-                studentName, 
-                parentName,
-                softwareName,
-                softwareCompany
-            });
-            const mailtoLink = generateMailtoLink(emailContent, email);
-            window.location.href = mailtoLink;
-
-            // Show success message with confetti
-            const successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.classList.add('flex');
-                successMessage.classList.remove('hidden');
-                const confettiOptions: ConfettiOptions = {
-                    particleCount: 200,
-                    spread: 200,
-                    origin: { y: 0.6 }
-                };
-                import('canvas-confetti').then(confetti => {
-                    confetti.default(confettiOptions);
-                });
+            if (!requestType || !['ppra', 'ferpa', 'coppa', 'ecpa'].includes(requestType) || !email || softwareEntries.length === 0) {
+                console.error('Missing required fields');
+                return;
             }
-        } catch (error) {
-            console.error('Error generating email:', error);
-        }
-        });
-    });
 
-    // Handle success message close button
-    document.addEventListener('astro:page-load', () => {
+            try {
+                const module = await emailTemplates[requestType]();
+                let emailContent = module.generateEmail({ 
+                    studentName, 
+                    parentName,
+                    softwareList: softwareEntries
+                });
+
+                if (includeWatermark) {
+                    emailContent += '\n\nGenerated using studentprivacy.io';
+                }
+
+                const mailtoLink = generateMailtoLink(emailContent, email);
+                window.location.href = mailtoLink;
+
+                // Show success message with confetti
+                const successMessage = document.getElementById('successMessage');
+                if (successMessage) {
+                    successMessage.classList.add('flex');
+                    successMessage.classList.remove('hidden');
+                    const confettiOptions: ConfettiOptions = {
+                        particleCount: 200,
+                        spread: 200,
+                        origin: { y: 0.6 }
+                    };
+                    import('canvas-confetti').then(confetti => {
+                        confetti.default(confettiOptions);
+                    });
+                }
+            } catch (error) {
+                console.error('Error generating email:', error);
+            }
+        });
+
+        // Handle success message close button
         document.getElementById('closeSuccess')?.addEventListener('click', () => {
             const successMessage = document.getElementById('successMessage');
             if (successMessage) {
                 successMessage.classList.add('hidden');
+                successMessage.classList.remove('flex');
             }
         });
     });

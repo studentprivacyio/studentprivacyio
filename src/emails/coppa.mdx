@@ -2,22 +2,30 @@
 layout: "@layouts/EmailTemplate.astro"
 ---
 
-export const generateEmail = ({ studentName, parentName, softwareName, softwareCompany }) => `Subject: COPPA Opt-Out Request - ${softwareName}
+export const generateEmail = ({ studentName, parentName, softwareList }) => {
+    const softwareListText = softwareList.map(software => 
+        software.company ? `${software.name} by ${software.company}` : software.name
+    ).join(', ');
+
+    const isMultiple = softwareList.length > 1;
+    const subject = isMultiple ? 'COPPA Opt-Out Request - Multiple Software' : `COPPA Opt-Out Request - ${softwareList[0].name}`;
+
+    return `Subject: ${subject}
 Dear School Administrator,
 
-I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to exercise my rights under the Children's Online Privacy Protection Act (COPPA) regarding the use of ${softwareName} by ${softwareCompany}.
+I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to exercise my rights under the Children's Online Privacy Protection Act (COPPA) regarding the use of ${isMultiple ? 'the following software tools' : 'this software'}: ${softwareListText}.
 
 As my child is under 13 years of age, I hereby:
 
-1. Revoke any previous consent given for the collection of my child's personal information through ${softwareName}
-2. Request the deletion of any personal information collected about my child by ${softwareName}
-3. Opt out of any future collection of my child's personal information by ${softwareName}
+1. Revoke any previous consent given for the collection of my child's personal information through ${isMultiple ? 'these software tools' : 'this software'}
+2. Request the deletion of any personal information collected about my child by ${isMultiple ? 'these systems' : 'this system'}
+3. Opt out of any future collection of my child's personal information by ${isMultiple ? 'these platforms' : 'this platform'}
 
-Please ensure that ${softwareCompany} and any other third-party operators working with ${softwareName} are notified of this opt-out request.
+Please ensure that ${isMultiple ? 'all relevant software companies and any other third-party operators working with these systems are' : 'the software company and any other third-party operators working with this system are'} notified of this opt-out request.
 
-Please confirm receipt of this request and provide written confirmation when all personal information has been deleted from ${softwareName}'s systems.
+Please confirm receipt of this request and provide written confirmation when all personal information has been deleted from ${isMultiple ? 'the systems' : 'the system'}.
 
 Sincerely,
 ${parentName}
-Parent/Legal Guardian of ${studentName}
-`; 
+Parent/Legal Guardian of ${studentName}`;
+} 
