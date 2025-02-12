@@ -14,7 +14,7 @@ export const generateEmail = ({ studentName, parentName, softwareList }) => {
         `Subject: ${subject}
 Dear School Administrator,
 
-I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to request access to my child's education records under the Family Educational Rights and Privacy Act (FERPA), specifically regarding data collected and maintained by ${isMultiple ? 'the following software tools' : 'this software'}: ${softwareListText}.
+I, ${parentName}, as the parent/legal guardian of ${studentName}, am writing to request access to my child's education records under the Family Educational Rights and Privacy Act (FERPA), specifically regarding data collected and maintained by ${isMultiple ? 'the following software tools' : 'this software'}: ${softwareListText}, along with any other similar software.
 
 Please provide copies of all education records maintained within ${isMultiple ? 'these systems' : 'this system'}, including but not limited to:
 
